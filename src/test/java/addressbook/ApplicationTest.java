@@ -1,5 +1,7 @@
 package addressbook;
 
+import addressbook.repository.AddressBookRepository;
+import addressbook.repository.BuddyInfoRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.thymeleaf.spring5.expression.Mvc;
-
+import static org.junit.Assert.*;
 import java.nio.charset.Charset;
 
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
@@ -28,6 +30,12 @@ public class ApplicationTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    BuddyInfoRepository buddyRepo;
+
+    @Autowired
+    AddressBookRepository addressBookRepository;
 
     @Test
     public void addressBookShouldBeEmpty() throws Exception {
@@ -48,10 +56,12 @@ public class ApplicationTest {
                 .content("{}"))
                 .andDo(print())
                 .andExpect(status().is(201));
+
+        assertNotEquals(this.addressBookRepository.count(), 0);
     }
 
     @Test
-    public void addNewBuddy() throws Exception {
+    public void createNewBuddy() throws Exception {
         String url = "/buddy";
         MvcResult result = this.mockMvc.perform(post(url)
                 .contentType(MediaType.APPLICATION_JSON).content("{\"name\": \"Smartpreet Grewal\",\n" +
@@ -59,12 +69,7 @@ public class ApplicationTest {
                 .andDo(print())
                 .andExpect(status().is(201))
                 .andReturn();
+
+        assertNotNull(this.buddyRepo.findByName("Smartpreet Grewal"));
     }
-
-    public MvcResult addBuddyToAddressbook(int buddyId, int addressbookId) throws Exception {
-        String url = "/" + buddyId + "/2/addressBook";
-        return this.mockMvc.perform(post(url).contentType("text/uri-list").content("/addressBook/" + addressbookId)).andReturn();
-    }
-
-
 }
