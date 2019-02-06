@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Address Book</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+        <table>
+            <tr>
+                <th>NAME </th>
+                <th>Phone Number</th>
+            </tr>
+            <p th:text = "${addressbook.buddies}"></p>
+            <tr th:each="buddy : ${addressbook.buddies}">
+                <td th:text="${buddy.name}"></td>
+                <td th:text="${buddy.phoneNumber}"></td>
+            </tr>
+        </table>
+
+    <form action="#" th:action="@{/}" th:object="${newBuddy}" method="post">
+        Name: <input type="text" th:field="*{name}"> <br>
+        Phone Number: <input type="text" th:field="*{phoneNumber}"> <br>
+        <button type="submit">Add new buddy</button>
+    </form>
+</body>
+</html>
